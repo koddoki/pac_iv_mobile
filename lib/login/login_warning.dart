@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'navbar.dart';
+import '../navbar.dart';
 
 class LoginWarning extends StatelessWidget {
   static String tag = 'loginWarning-page';
@@ -47,7 +47,7 @@ class LoginWarning extends StatelessWidget {
 
     final body = Container(
       width: MediaQuery.of(context).size.width,
-      padding: EdgeInsets.all(28.0),
+      padding: const EdgeInsets.all(28.0),
       decoration: const BoxDecoration(
         gradient: LinearGradient(colors: [
           Colors.blue,
