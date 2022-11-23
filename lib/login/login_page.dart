@@ -1,13 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:ondwaveda/login/create_user_page.dart';
+import 'package:ondwaveda/login/data/db.dart';
 import 'login_warning.dart';
 
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
+
+  const LoginPage({super.key});
   @override
-  _LoginPageState createState() => new _LoginPageState();
+  LoginPageState createState() => LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class LoginPageState extends State<LoginPage> {
+  TextEditingController emailController = TextEditingController();
+  TextEditingController senhaController = TextEditingController();
+
+  String errorMensage = '';
+
+  void login() async {
+    List user = await OndwavedaDB.instance.searchUser(emailController.text, senhaController.text);
+
+    if (user.isNotEmpty) {
+      Navigator.of(context).pushReplacementNamed(LoginWarning.tag);
+    }
+    errorMensage = 'Usuario Invalido';
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final logo = Hero(
@@ -20,16 +39,18 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     final email = TextFormField(
+      controller: emailController,
       keyboardType: TextInputType.emailAddress,
       autofocus: false,
       decoration: InputDecoration(
         hintText: 'e-mail@ondwaveda.com',
-        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+        contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
       ),
     );
 
     final password = TextFormField(
+      controller: senhaController,
       autofocus: false,
       obscureText: true,
       decoration: InputDecoration(
@@ -49,9 +70,7 @@ class _LoginPageState extends State<LoginPage> {
       padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: ElevatedButton(
         style: style,
-        onPressed: () {
-          Navigator.of(context).pushNamed(LoginWarning.tag);
-        },
+        onPressed: ()=> login(),
         child: const Text('Entrar'),
         // shape: RoundedRectangleBorder(
         //   borderRadius: BorderRadius.circular(24),
@@ -62,12 +81,12 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
 
-    final forgotLabel = TextButton(
+    final createLabel = TextButton(
       child: const Text(
-        'Esqueceu sua senha?',
+        'Criar conta',
         style: TextStyle(color: Colors.black54),
       ),
-      onPressed: () {},
+      onPressed: () {Navigator.of(context).pushNamed(CreateUserPage.tag);},
     );
 
     return Scaffold(
@@ -82,9 +101,10 @@ class _LoginPageState extends State<LoginPage> {
             email,
             const SizedBox(height: 8.0),
             password,
+            errorMensage != '' ? Text(errorMensage,style: const TextStyle(color: Colors.red),textAlign: TextAlign.center,) : const SizedBox(),
             const SizedBox(height: 24.0),
             loginButton,
-            forgotLabel
+            createLabel
           ],
         ),
       ),
