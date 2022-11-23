@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ondwaveda/calendar.dart';
-
+import 'home.dart';
 
 class Navbar extends StatefulWidget {
   const Navbar({super.key});
@@ -40,9 +40,9 @@ class _NavbarState extends State<Navbar> {
       ),
       body: <Widget>[
         Container(
-          color: Colors.red,
+          color: Colors.blueGrey,
           alignment: Alignment.center,
-          child: const Text('Page 1'),
+          child: HomeScreen(),
         ),
         Container(
           color: Colors.green,
