@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ondwaveda/calendar.dart';
+import 'package:ondwaveda/payment_list.dart';
+
 import 'home.dart';
 
 class Navbar extends StatefulWidget {
@@ -52,7 +54,7 @@ class _NavbarState extends State<Navbar> {
         Container(
           color: Colors.blue,
           alignment: Alignment.center,
-          child: const Text('Page 3'),
+          child: PaymentList(),
         ),
       ][currentPageIndex],
     );
