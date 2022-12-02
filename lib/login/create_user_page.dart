@@ -1,32 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:ondwaveda/login/data/db.dart';
+import 'package:ondwaveda/login/data/model.dart';
+import 'package:ondwaveda/login/login_page.dart';
 import 'login_warning.dart';
 
-class LoginPage extends StatefulWidget {
-  static String tag = 'login-page';
+class CreateUserPage extends StatefulWidget {
+  static String tag = 'create-user';
+
+  const CreateUserPage({super.key});
   @override
-  _LoginPageState createState() => new _LoginPageState();
+  CreateUserPageState createState() => CreateUserPageState();
 }
 
-<<<<<<< Updated upstream:lib/login_page.dart
-class _LoginPageState extends State<LoginPage> {
-=======
-class LoginPageState extends State<LoginPage> {
+class CreateUserPageState extends State<CreateUserPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController senhaController = TextEditingController();
+  TextEditingController senhaController2 = TextEditingController();
 
   String errorMensage = '';
 
-  void login() async {
-    List user = await OndwavedaDB.instance.searchUser(emailController.text, senhaController.text);
 
-    if (user.isNotEmpty) {
-      Navigator.of(context).pushReplacementNamed(LoginWarning.tag, arguments: {"usuario": user});
+  void login() async {
+    List users = await OndwavedaDB.instance.users();
+
+    if(senhaController.text != '' && emailController.text != '') {
+      if (senhaController.text == senhaController2.text) {
+        for (var element in users) { 
+          if(element.toString().contains(emailController.text)){
+            errorMensage = 'Usuario já existe';
+            setState(() {});
+            return;
+          }
+        }
+        await OndwavedaDB.instance.insertUser(Usuario(nome: emailController.text, senha: senhaController.text));
+        Navigator.of(context).pop();
+      }
+      errorMensage = 'As duas senhas devem ser iguais!';
+      setState(() {});
+      return;
     }
-    errorMensage = 'Usuario Invalido';
+    errorMensage = 'Preencha todos os campos!';
     setState(() {});
   }
 
->>>>>>> Stashed changes:lib/login/login_page.dart
   @override
   Widget build(BuildContext context) {
     final logo = Hero(
@@ -39,16 +55,18 @@ class LoginPageState extends State<LoginPage> {
     );
 
     final email = TextFormField(
+      controller: emailController,
       keyboardType: TextInputType.emailAddress,
       autofocus: false,
       decoration: InputDecoration(
         hintText: 'e-mail@ondwaveda.com',
-        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+        contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
       ),
     );
 
     final password = TextFormField(
+      controller: senhaController,
       autofocus: false,
       obscureText: true,
       decoration: InputDecoration(
@@ -57,6 +75,18 @@ class LoginPageState extends State<LoginPage> {
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
       ),
     );
+
+    final password2 = TextFormField(
+      controller: senhaController2,
+      autofocus: false,
+      obscureText: true,
+      decoration: InputDecoration(
+        hintText: 'repita a senha',
+        contentPadding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+      ),
+    );
+
     final ButtonStyle style = ElevatedButton.styleFrom(
       textStyle: const TextStyle(fontSize: 20),
       shape: RoundedRectangleBorder(
@@ -68,25 +98,17 @@ class LoginPageState extends State<LoginPage> {
       padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: ElevatedButton(
         style: style,
-        onPressed: () {
-          Navigator.of(context).pushNamed(LoginWarning.tag);
-        },
-        child: const Text('Entrar'),
-        // shape: RoundedRectangleBorder(
-        //   borderRadius: BorderRadius.circular(24),
-        // ),
-        // padding: EdgeInsets.all(12),
-        // color: Colors.lightBlueAccent,
-        // child: Text('Log In', style: TextStyle(color: Colors.white)),
+        onPressed: ()=> login(),
+        child: const Text('Criar'),
       ),
     );
 
-    final forgotLabel = TextButton(
+    final createLabel = TextButton(
       child: const Text(
-        'Esqueceu sua senha?',
+        'Voltar',
         style: TextStyle(color: Colors.black54),
       ),
-      onPressed: () {},
+      onPressed: () {Navigator.of(context).pop();},
     );
 
     return Scaffold(
@@ -101,9 +123,12 @@ class LoginPageState extends State<LoginPage> {
             email,
             const SizedBox(height: 8.0),
             password,
+            const SizedBox(height: 8.0),
+            password2,
+            errorMensage != '' ? Text(errorMensage,style: const TextStyle(color: Colors.red),textAlign: TextAlign.center,) : const SizedBox(),
             const SizedBox(height: 24.0),
             loginButton,
-            forgotLabel
+            createLabel
           ],
         ),
       ),

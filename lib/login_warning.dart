@@ -4,8 +4,8 @@ import 'navbar.dart';
 class LoginWarning extends StatelessWidget {
   static String tag = 'loginWarning-page';
 
-  const LoginWarning({super.key});
-
+  const LoginWarning(this.username, {super.key});
+  final String username;
   @override
   Widget build(BuildContext context) {
     const userIcon = Hero(
@@ -20,10 +20,10 @@ class LoginWarning extends StatelessWidget {
       ),
     );
 
-    const welcome = Padding(
+    final welcome = Padding(
       padding: EdgeInsets.all(8.0),
       child: Text(
-        'Bem vindo de volta, userName!',
+        'Bem vindo de volta, $username',
         style: TextStyle(fontSize: 28.0, color: Colors.white),
       ),
     );

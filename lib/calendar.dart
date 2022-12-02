@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 // Biblioteca para o uso do calendário
 import 'package:flutter_clean_calendar/flutter_clean_calendar.dart';
+import 'package:ondwaveda/login/data/provider.dart';
+import 'package:provider/provider.dart';
 
 class CalendarScreen extends StatefulWidget {
   @override
@@ -10,21 +12,7 @@ class CalendarScreen extends StatefulWidget {
 }
 
 class _CalendarScreenState extends State<CalendarScreen> {
-  final Map<DateTime, List<CleanCalendarEvent>> _events = {
-
-    // Cria um evento de placeholder apenas para observação de como a aplicação exibe os dados
-
-    DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day+1): [
-      CleanCalendarEvent('Evento Importante!',
-          startTime: DateTime(DateTime.now().year, DateTime.now().month,
-              DateTime.now().day, 21, 30),
-          endTime: DateTime(DateTime.now().year, DateTime.now().month,
-              DateTime.now().day, 23, 59),
-          description: 'O dia que a gente vai se reunir pra fazer o trabalho',
-          color: Colors.blue),
-    ],
-  };
-
+ 
   @override
   void initState() {
     super.initState();
@@ -35,12 +23,13 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final Map<DateTime, List<CleanCalendarEvent>> events = Provider.of<EventProvider>(context, listen: false).event;
     return Scaffold(
       body: SafeArea(
         child: Calendar(
           startOnMonday: true,
           weekDays: const ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab', 'Dom'],
-          events: _events,
+          events: events,
           isExpandable: true,
           eventDoneColor: Colors.green,
           selectedColor: Colors.pink,
